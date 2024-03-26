@@ -17,7 +17,7 @@ Subject to cahnge.
 
 - <b>Kali Linux through VMBox
 
-<h2>Program walk-through:</h2>
+<h2>Lab Overview:</h2>
 
 <p align="center">
 Launch the utility: <br/>
