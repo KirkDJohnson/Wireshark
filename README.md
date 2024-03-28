@@ -2,7 +2,7 @@
 
 <br />
 <h2>Description</h2>
-This lab I analyzed a known malicious packet capture on the exploit Log4J and was able to able to identify the exploit in clear text, and check to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming that the exploit was successful, which was not the case. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server.Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any nre connections
+This lab I analyzed a known malicious packet capture on the exploit Log4J. Due to the traffic in capture using http and not https (Hyper Text Transfer Protocol...[Secure] encrypts data after the TCP handshake making it unreadable unless in possession of the decryption key) I was able to identify the exploit in clear text. Once the attack was idenfitied I checked to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming whether or not the exploit was successful; which was fortunately not the case. Once it was clear the attack was unsuccessful I conducted threat intelligence/research to learn more about attack. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server. Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any new outbound connections.
 
 <h2>Utilities Used</h2>
 
@@ -13,7 +13,7 @@ This lab I analyzed a known malicious packet capture on the exploit Log4J and wa
 
 <h2>Environments Used </h2>
 
-- <b>Kali Linux through VMBox
+- <b>Kali Linux through Oracle Virtual Box
 
 <h2>Lab Overview:</h2>
 
@@ -26,19 +26,19 @@ After noticing an unusual amount of traffic and different Ipv4 conversations org
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/b5a20e87-9c74-409a-a7bb-76fe36420ca2" alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-Knowing that I dealing with a Log4J exploit PCAP, the exploit leveerage the Java Naming and Directory Interface (jndi) vulnerbility, so I thought that would be a good filter to start with (ip contains "jndi") <br/>
+Knowing that I dealing with a Log4J exploit PCAP, the exploit leverages a Java Naming and Directory Interface (jndi) vulnerability, so I thought that would be a good filter to start with (ip contains "jndi") <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/1c9cea18-0c98-40ea-9700-97f542ce0d89"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-After seeing a response from the filter through http (clear text), I was able to further examine the http POST packet and found the User-Agent that first tried to deploy the exploit.  <br/>
+After seeing a response from the filter in clear text, I was able to further examine the http POST packet and found the User-Agent that first tried to deploy the exploit and took note of it for further investigation  <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/daee5119-30b0-4487-b10d-f9b0efa41c12"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-Knowing that connections need to make the TCP handshake I filtered to see if the server syncronished (step 1) or created a new conenction signaling a potentioanl C2 server and successful exploit which was not the case. <br/>
+Knowing that connections need to make the TCP handshake I filtered to see if the server synchronized (step 1 of the handshake) or created a new connection signaling a potentioanl C2 server <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/aafd9ff4-0806-46bb-9200-fbac229d7b32"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-After confirming no compromise, I went back to the User-Agent field and decoded the base-64 script using the online tool CyberChef <br/>
+After confirming there was no compromise, I went back to the User-Agent field and decoded the base-64 script using the online tool CyberChef <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/9eb3698e-4f9a-4d1d-a694-c04845f6108d"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
@@ -50,7 +50,7 @@ In the Community section of VirusTotal, there was further evidence that it was a
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/d726f84b-251f-4bfc-82cb-7183a8fa5faf"  alt="Wireshark Mal Analysis"/>
 </p>
 <h2>Thoughts</h2>
-This lab provided hands on experience analyzing a packet capture (.pcapng file) rather than live analysis on the wire. Obtaining a real packet capture of an attempted malicious attack and analyzing it was incredntly intresting, especially because it was in clear text through http port 80, rather than encrypted. While I have used VirusTotal and CyberChef in previous labs and walkthroughs, knowing that the artificats pulled from the pcap were real made me we even more curious to dive into resources that others in the cybersecurity community have put together surrounding the attacking IP address and the exploit itself. Moreover, I have used Wireshark previously, but this was the first time I configured Max Mind's GEOIP database to resolve locations from IP addresses and then be able to export as a map, was another highlight from this lab. 
+This lab provided hands on experience analyzing a packet capture (.pcapng file) rather than live analysis on the wire. Obtaining a real packet capture of an attempted malicious attack and analyzing it was incredibly intresting, especially because it was in clear text through http port 80, rather than encrypted. While I have used VirusTotal and CyberChef in previous labs and walkthroughs, knowing that the artifacts pulled from the pcap were real made me we even more curious to dive into resources that others in the cybersecurity community have put together surrounding the attacking IP address and the exploit itself. Moreover, I have used Wireshark previously, but this was the first time I configured Max Mind's GEOIP database to resolve locations from IP addresses and then be able to export as a map, which was another highlight from this lab. 
 <!--
  ```diff
 - text in red
