@@ -34,7 +34,7 @@ After seeing a response from the filter in clear text, I was able to further exa
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/daee5119-30b0-4487-b10d-f9b0efa41c12"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-Knowing that connections need to make the TCP handshake I filtered to see if the server synchronized (step 1 of the handshake) or created a new connection signaling a potentioanl C2 server <br/>
+Knowing that connections need to make the TCP handshake I filtered to see if the server synchronized (step 1 of the handshake) or created a new connection signaling a potential C2 server <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/aafd9ff4-0806-46bb-9200-fbac229d7b32"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
@@ -50,7 +50,7 @@ In the Community section of VirusTotal, there was further evidence that it was a
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/d726f84b-251f-4bfc-82cb-7183a8fa5faf"  alt="Wireshark Mal Analysis"/>
 </p>
 <h2>Thoughts</h2>
-This lab provided hands on experience analyzing a packet capture (.pcapng file) rather than live analysis on the wire. Obtaining a real packet capture of an attempted malicious attack and analyzing it was incredibly intresting, especially because it was in clear text through http port 80, rather than encrypted. While I have used VirusTotal and CyberChef in previous labs and walkthroughs, knowing that the artifacts pulled from the pcap were real made me we even more curious to dive into resources that others in the cybersecurity community have put together surrounding the attacking IP address and the exploit itself. Moreover, I have used Wireshark previously, but this was the first time I configured Max Mind's GEOIP database to resolve locations from IP addresses and then be able to export as a map, which was another highlight from this lab. 
+This lab provided hands on experience analyzing a packet capture (.pcapng file) rather than live analysis on the wire. Obtaining a real packet capture of an attempted malicious attack and analyzing it was incredibly interesting, especially because it was in clear text through http port 80, rather than encrypted. While I have used VirusTotal and CyberChef in previous labs and walkthroughs, knowing that the artifacts pulled from the pcap were real made me we even more curious to dive into resources that others in the cybersecurity community have put together surrounding the attacking IP address and the exploit itself. Moreover, I have used Wireshark previously, but this was the first time I configured Max Mind's GEOIP database to resolve locations from IP addresses and then be able to export as a map, which was another highlight from this lab. 
 <!--
  ```diff
 - text in red
