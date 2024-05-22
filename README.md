@@ -2,7 +2,7 @@
 
 <br />
 <h2>Description</h2>
-This lab I analyzed a known malicious packet capture on the exploit Log4J. I begun my investigation with the same playbook I use when analysis a packet capture which is to examine the statistics and see how many and how much endpoints are communicating. Noticing the sheer amount different IP addresses I wanted to map the addresses on the globe so I installed and configured Max Mind's GEOIP database which resolves IP addresses to their coutnry and city, and coordiantes. The considerable amount of IP addresses signifies a lilely attack from a botnet. Due to the traffic in capture using http and not https (Hyper Text Transfer Protocol...[Secure] encrypts data after the TCP handshake making it unreadable unless in possession of the decryption key), I was able to identify the exploit in clear text. Researching the Log4J vulnerability, I knew that it leveraged jndi (Java Naming and Direcotry Interface) so I filtered for packets including this string and was successful. Spotting the packet that made the Once the attack was identified I checked to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming whether or not the exploit was successful; which was fortunately not the case. Once it was clear the attack was unsuccessful I conducted threat intelligence/research to learn more about attack. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server. Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any new outbound connections.
+This lab I analyzed a known malicious packet capture on the exploit Log4J. I begun my investigation with the same playbook I use when analysis a packet capture which is to examine the statistics and see how many and how much endpoints are communicating. Noticing the sheer amount different IP addresses I wanted to map the addresses on the globe so I installed and configured Max Mind's GEOIP database which resolves IP addresses to their country, city, and coordinates. The considerable amount of IP addresses signifies a potential attack from a botnet for the Log4J expliot or other malicioius scanning. Due to the traffic in capture using http and not https (Hyper Text Transfer Protocol...[Secure] encrypts data after the TCP handshake making it unreadable unless in possession of the decryption key), I was able to identify the exploit in clear text filtering for "jndi" which is the Java Naming and Direcotry Interface. The first packet from this filter was a HTTP POST request and upon examing the User-Agent field, revealed an ldap request to an IP followed by encoded text. Decoding the text in CyberChef showed the the code to a wget to an IP to download a shell script, use the chmod command to give it execute permissions and then run the script. However, to the IP hosting the shell script meaning the traffic was blocked or the vulnerability was patched. Moreover, to ensure the host machine I saught to discover if the host machine 198[.]71[.]247[.]91 made connection attempts to public IP, so I filtered for it as the source address and and TCP SYN packets which is setting up the TCP handshake for connection and confirmed that there were no connections.Spotting the packet that made the Once the attack was identified I checked to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming whether or not the exploit was successful; which was fortunately not the case. Once it was clear the attack was unsuccessful I conducted threat intelligence/research to learn more about attack. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server. Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any new outbound connections.
 
 <h2>Utilities Used</h2>
 
@@ -22,26 +22,27 @@ Opening up the PCAP, the first thing I like to do is see how many devices are pr
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/16d6cb86-1406-4f22-bdcc-589a2e346eda" alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-After noticing an unusual amount of traffic and different Ipv4 conversations orginating from different countries I exported endpoints to be shown on a global map using Max Mind's GEOIP database.(Endpoints -> Map -> Open in Browser) <br/>
+After noticing an unusual amount of traffic and different IPv4 conversations orginating from different countries I exported endpoints to be shown on a global map using Max Mind's GEOIP database.(Endpoints -> Map -> Open in Browser) <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/b5a20e87-9c74-409a-a7bb-76fe36420ca2" alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-Knowing that I dealing with a Log4J exploit PCAP, the exploit leverages a Java Naming and Directory Interface (jndi) vulnerability, so I thought that would be a good filter to start with (ip contains "jndi") <br/>
+Knowing that I dealing with a Log4J exploit PCAP, the exploit leverages the Java Naming and Directory Interface (jndi) vulnerability, so I thought that would be a good filter to start with (ip contains "jndi") <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/1c9cea18-0c98-40ea-9700-97f542ce0d89"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-After seeing a response from the filter in clear text, I was able to further examine the http POST packet and found the User-Agent that first tried to deploy the exploit and took note of it for further investigation  <br/>
+The filter for "jndi" work well, and I expanded the first packet which was a an HTTP POST request and examined the User-Agent field which showed an ldap request with an IP followed by base-64 encoded text.   <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/daee5119-30b0-4487-b10d-f9b0efa41c12"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-Knowing that connections need to make the TCP handshake I filtered to see if the server synchronized (step 1 of the handshake) or created a new connection signaling a potential C2 server <br/>
-<img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/aafd9ff4-0806-46bb-9200-fbac229d7b32"  alt="Wireshark Mal Analysis"/>
-<br />
-<br />
-After confirming there was no compromise, I went back to the User-Agent field and decoded the base-64 script using the online tool CyberChef <br/>
+  Decoding the the end of the intial post request in the attack, shows a wget which a web request to an IP to download lh[.]sh a shell script and the command chmod which changes privileges to add x which is execute privliegs. Lastly, it would start the shell script <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/9eb3698e-4f9a-4d1d-a694-c04845f6108d"  alt="Wireshark Mal Analysis"/>
 <br />
 <br />
+I then determined if the host server at 198.71.247.91 made any connections to outside server, specically to the wget IP address in decoded string. I filtered for SYN packets which establish a TCP connection and found the server to have not connected with outside addresses likely meaning that the server was patched and therefore the expliot failed. <br/>
+<img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/aafd9ff4-0806-46bb-9200-fbac229d7b32"  alt="Wireshark Mal Analysis"/>
+<br />
+<br />
+
 With the decoded script I further investigated it using VirusTotal to learn more about the IP the script was calling and found it to be malicious<br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/8b49d158-a6c8-4748-a4f1-e41de3998b11"  alt="Wireshark Mal Analysis"/>
 <br />
