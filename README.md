@@ -2,7 +2,7 @@
 
 <br />
 <h2>Description</h2>
-This lab I analyzed a known malicious packet capture on the exploit Log4J. Due to the traffic in capture using http and not https (Hyper Text Transfer Protocol...[Secure] encrypts data after the TCP handshake making it unreadable unless in possession of the decryption key), I was able to identify the exploit in clear text. Once the attack was identified I checked to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming whether or not the exploit was successful; which was fortunately not the case. Once it was clear the attack was unsuccessful I conducted threat intelligence/research to learn more about attack. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server. Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any new outbound connections.
+This lab I analyzed a known malicious packet capture on the exploit Log4J. I begun my investigation with the same playbook I use when analysis a packet capture which is to examine the statistics and see how many and how much endpoints are communicating. Noticing the sheer amount different IP addresses I wanted to map the addresses on the globe so I installed and configured Max Mind's GEOIP database which resolves IP addresses to their coutnry and city, and coordiantes. The considerable amount of IP addresses signifies a lilely attack from a botnet. Due to the traffic in capture using http and not https (Hyper Text Transfer Protocol...[Secure] encrypts data after the TCP handshake making it unreadable unless in possession of the decryption key), I was able to identify the exploit in clear text. Researching the Log4J vulnerability, I knew that it leveraged jndi (Java Naming and Direcotry Interface) so I filtered for packets including this string and was successful. Spotting the packet that made the Once the attack was identified I checked to see if the server responsed to the attacker, i.e opened a command and control (c2) channel confirming whether or not the exploit was successful; which was fortunately not the case. Once it was clear the attack was unsuccessful I conducted threat intelligence/research to learn more about attack. My approach to this was to initally see who (what IP addresses and where they were from) was communicating with the target server. Then it was crucial to determine whether the server that was attacked (198.71.247.91) begun any new outbound connections.
 
 <h2>Utilities Used</h2>
 
@@ -22,7 +22,7 @@ Opening up the PCAP, the first thing I like to do is see how many devices are pr
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/16d6cb86-1406-4f22-bdcc-589a2e346eda" alt="Wireshark Mal Analysis"/>
 <br />
 <br />
-After noticing an unusual amount of traffic and different Ipv4 conversations orginating from different countries I exported endpoints to be shown on a global map (Endpoints -> Map -> Open in Browser) <br/>
+After noticing an unusual amount of traffic and different Ipv4 conversations orginating from different countries I exported endpoints to be shown on a global map using Max Mind's GEOIP database.(Endpoints -> Map -> Open in Browser) <br/>
 <img src="https://github.com/KirkDJohnson/Wireshark/assets/164972007/b5a20e87-9c74-409a-a7bb-76fe36420ca2" alt="Wireshark Mal Analysis"/>
 <br />
 <br />
